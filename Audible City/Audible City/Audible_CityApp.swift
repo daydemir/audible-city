@@ -10,22 +10,23 @@ import SwiftData
 
 @main
 struct Audible_CityApp: App {
-
+    
     @State private var locationManager = LocationManager()
-        @State private var audioProcessor = AudioProcessor()
-        
-        var body: some Scene {
-            WindowGroup {
-                TabView {
-                    ContentView(locationManager: locationManager)
-                        .tabItem {
-                            Label("Location", systemImage: "location")
-                        }
-                    
-                    AudioRecordingView(audioProcessor: audioProcessor)
-                        .tabItem {
-                            Label("Audio", systemImage: "waveform")
-                        }
-                }
+    @State private var audioProcessor = AudioProcessor()
+    
+    var body: some Scene {
+        WindowGroup {
+            TabView {
+                ContentView(locationManager: locationManager)
+                    .tabItem {
+                        Label("Location", systemImage: "location")
+                    }
+                
+                AudioRecordingView(audioProcessor: audioProcessor)
+                    .tabItem {
+                        Label("Audio", systemImage: "waveform")
+                    }
             }
-        }}
+        }
+    }
+}

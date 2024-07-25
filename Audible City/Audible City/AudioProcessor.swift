@@ -81,8 +81,8 @@ class AudioProcessor: AudioProcessorProtocol {
                     }
                 )
             
-            let inferenceWindowSize = 1.5
-            let overlapFactor = 0.9
+            let inferenceWindowSize = 5.0
+            let overlapFactor = 0.5
             
             classifier.startSoundClassification(
                 subject: classificationSubject!,
@@ -139,7 +139,7 @@ class AudioProcessor: AudioProcessorProtocol {
     
     private func handleClassificationResult(_ result: SNClassificationResult) {
         let topClassifications = result.classifications
-            .prefix(3) // Get top 3 classifications
+            .prefix(10) // Get top 10 classifications
             .map { "\($0.identifier): \(String(format: "%.2f", $0.confidence))" }
         
         classifications = topClassifications

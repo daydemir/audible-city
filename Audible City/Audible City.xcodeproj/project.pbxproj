@@ -280,6 +280,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Audible City/Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -313,6 +314,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Audible City/Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
