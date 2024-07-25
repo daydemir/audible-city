@@ -6,51 +6,71 @@
 //
 
 import CoreLocation
-import Observation
+import CoreMotion
 
-protocol LocationManagerProtocol: Observable {
-    var authorizationStatus: CLAuthorizationStatus? { get set }
-    var lastLocation: CLLocation? { get }
+protocol LocationManagerProtocol: AnyObject {
+    var delegate: CLLocationManagerDelegate? { get set }
+    var authorizationStatus: CLAuthorizationStatus { get }
+    var location: CLLocation? { get }
+    var currentActivity: CMMotionActivity? { get }
+    
     func requestAlwaysAuthorization()
-    func startLocationUpdates()
-    func stopLocationUpdates()
+    func startUpdatingLocation()
+    func stopUpdatingLocation()
 }
 
-@Observable
 class LocationManager: NSObject, LocationManagerProtocol, CLLocationManagerDelegate {
-    private let locationManager = CLLocationManager()
-    var authorizationStatus: CLAuthorizationStatus?
-    var lastLocation: CLLocation?
+    private let manager: CLLocationManager
+    private let activityManager: CMMotionActivityManager
     
-    override init() {
+    var delegate: CLLocationManagerDelegate? {
+        get { manager.delegate }
+        set { manager.delegate = newValue }
+    }
+    
+    var authorizationStatus: CLAuthorizationStatus {
+        manager.authorizationStatus
+    }
+    
+    var location: CLLocation? {
+        manager.location
+    }
+    
+    @Published var currentActivity: CMMotionActivity?
+    
+    init(manager: CLLocationManager = CLLocationManager(), activityManager: CMMotionActivityManager = CMMotionActivityManager()) {
+        self.manager = manager
+        self.activityManager = activityManager
         super.init()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.pausesLocationUpdatesAutomatically = false
+        
+        self.manager.delegate = self
+        self.manager.desiredAccuracy = kCLLocationAccuracyBest
+        self.manager.distanceFilter = 10
+        self.manager.allowsBackgroundLocationUpdates = true
+        self.manager.pausesLocationUpdatesAutomatically = false
+        
+        startActivityUpdates()
     }
     
     func requestAlwaysAuthorization() {
-        locationManager.requestAlwaysAuthorization()
+        manager.requestAlwaysAuthorization()
     }
     
-    func startLocationUpdates() {
-        locationManager.startUpdatingLocation()
-        locationManager.startMonitoringSignificantLocationChanges()
+    func startUpdatingLocation() {
+        manager.startUpdatingLocation()
     }
     
-    func stopLocationUpdates() {
-        locationManager.stopUpdatingLocation()
-        locationManager.stopMonitoringSignificantLocationChanges()
+    func stopUpdatingLocation() {
+        manager.stopUpdatingLocation()
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastLocation = locations.last
-        // Here you would typically process the new location data
-        print("New location: \(String(describing: lastLocation))")
+    private func startActivityUpdates() {
+        if CMMotionActivityManager.isActivityAvailable() {
+            activityManager.startActivityUpdates(to: OperationQueue.main) { [weak self] activity in
+                self?.currentActivity = activity
+            }
+        }
     }
     
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        authorizationStatus = manager.authorizationStatus
-    }
+    // Implement other CLLocationManagerDelegate methods as needed
 }

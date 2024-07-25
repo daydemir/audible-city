@@ -6,6 +6,10 @@
 	objectVersion = 70;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2288136B2C529B1200E75EAF /* SotoDynamoDB in Frameworks */ = {isa = PBXBuildFile; productRef = 2288136A2C529B1200E75EAF /* SotoDynamoDB */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		22E53A382C4A7D7900C33A6D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -50,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2288136B2C529B1200E75EAF /* SotoDynamoDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +115,7 @@
 			);
 			name = "Audible City";
 			packageProductDependencies = (
+				2288136A2C529B1200E75EAF /* SotoDynamoDB */,
 			);
 			productName = "Audible City";
 			productReference = 22E53A232C4A7D7800C33A6D /* Audible City.app */;
@@ -193,6 +199,9 @@
 				Base,
 			);
 			mainGroup = 22E53A1A2C4A7D7800C33A6D;
+			packageReferences = (
+				228813692C529B1200E75EAF /* XCRemoteSwiftPackageReference "soto" */,
+			);
 			productRefGroup = 22E53A242C4A7D7800C33A6D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -282,6 +291,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This is required to classify audio snippets as you move around your city.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "This is required to better classify audio snippets for different types of motion as you move around your city.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -316,6 +326,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This is required to classify audio snippets as you move around your city.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "This is required to better classify audio snippets for different types of motion as you move around your city.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -565,6 +576,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		228813692C529B1200E75EAF /* XCRemoteSwiftPackageReference "soto" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/soto-project/soto.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2288136A2C529B1200E75EAF /* SotoDynamoDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 228813692C529B1200E75EAF /* XCRemoteSwiftPackageReference "soto" */;
+			productName = SotoDynamoDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 22E53A1B2C4A7D7800C33A6D /* Project object */;
 }

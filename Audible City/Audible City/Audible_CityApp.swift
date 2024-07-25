@@ -7,26 +7,30 @@
 
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 @main
-struct Audible_CityApp: App {
-    
-    @State private var locationManager = LocationManager()
-    @State private var audioProcessor = AudioProcessor()
+struct AudibleCityApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
         WindowGroup {
-            TabView {
-                ContentView(locationManager: locationManager)
-                    .tabItem {
-                        Label("Location", systemImage: "location")
-                    }
-                
-                AudioRecordingView(audioProcessor: audioProcessor)
-                    .tabItem {
-                        Label("Audio", systemImage: "waveform")
-                    }
-            }
+            ContentView()
         }
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    var backgroundObservationManager: BackgroundObservationManager?
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        let locationManager = LocationManager()
+        let audioProcessor = AudioProcessor()
+        let observationRecorder = ObservationRecorder(locationManager: locationManager, audioProcessor: audioProcessor)
+        
+        backgroundObservationManager = BackgroundObservationManager(locationManager: locationManager, observationRecorder: observationRecorder)
+        backgroundObservationManager?.start()
+        
+        return true
     }
 }

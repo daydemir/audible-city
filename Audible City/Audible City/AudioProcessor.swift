@@ -9,9 +9,9 @@ import AVFoundation
 import Combine
 import SoundAnalysis
 
-protocol AudioProcessorProtocol: Observable {
+protocol AudioProcessorProtocol {
     var isRecording: Bool { get }
-    var classifications: [String] { get }
+    var classifications: [Classification] { get }
     var currentDecibels: Float { get }
     func startRecording()
     func stopRecording()
@@ -47,7 +47,7 @@ class AudioProcessor: AudioProcessorProtocol {
     private var audioEngine: AVAudioEngine?
     
     var isRecording: Bool = false
-    var classifications: [String] = []
+    var classifications: [Classification] = []
     var currentDecibels: Float = -160.0
     
     init(classifier: SystemAudioClassifier = .singleton, decibelExtractor: DecibelExtractor = DecibelExtractor()) {
@@ -138,10 +138,10 @@ class AudioProcessor: AudioProcessorProtocol {
     }
     
     private func handleClassificationResult(_ result: SNClassificationResult) {
-        let topClassifications = result.classifications
-            .prefix(10) // Get top 10 classifications
-            .map { "\($0.identifier): \(String(format: "%.2f", $0.confidence))" }
-        
-        classifications = topClassifications
+        classifications = result.classifications
+            .filter { $0.confidence > 0.05 }
+            .map { classification in
+            Classification(label: classification.identifier, confidence: classification.confidence)
+        }
     }
 }

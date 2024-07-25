@@ -40,8 +40,8 @@ struct AudioRecordingView<Processor: AudioProcessorProtocol>: View {
                     .padding()
             }
             
-            List(audioProcessor.classifications, id: \.self) { classification in
-                Text(classification)
+            List(audioProcessor.classifications, id: \.label) { classification in
+                Text(classification.description)
             }
         }
     }
@@ -54,8 +54,10 @@ struct AudioRecordingView_Previews: PreviewProvider {
 }
 
 class MockAudioProcessor: AudioProcessorProtocol {
+    
+    
     var isRecording: Bool = false
-    var classifications: [String] = ["Dog: 0.8", "Cat: 0.6", "Bird: 0.3"]
+    var classifications: [Classification] = [Classification(label: "Dog", confidence: 0.8), Classification(label: "Cat", confidence: 0.5)]
     var currentDecibels: Float = -30.0
     
     func startRecording() { isRecording = true }
