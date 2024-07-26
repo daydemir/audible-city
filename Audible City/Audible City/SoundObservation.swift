@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SotoDynamoDB
 
 struct Location: Codable {
     let latitude: Double
@@ -13,7 +14,8 @@ struct Location: Codable {
     let altitude: Double?
 }
 
-struct SoundObservation: Codable {
+struct SoundObservation: DynamoCodable {
+    let id: String
     let observer_id: String
     let date: Date
     let location: Location
@@ -23,6 +25,12 @@ struct SoundObservation: Codable {
     let duration: TimeInterval
     let activity: Activity
     let classifications: [Classification]
+    
+    let version: String
+    
+    func writeable() throws -> [String: DynamoDB.AttributeValue] {
+        return try DynamoDBEncoder().encode(self)
+    }
 }
 
 enum Device: String, Codable {

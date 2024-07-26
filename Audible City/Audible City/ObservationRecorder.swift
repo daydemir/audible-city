@@ -28,9 +28,9 @@ actor ObservationRecorder {
                 while elapsedTime < totalDuration {
                     let segmentStart = Date()
                     
-                    await audioProcessor.startRecording()
+                    audioProcessor.startRecording()
                     try? await Task.sleep(for: .seconds(segmentDuration))
-                    await audioProcessor.stopRecording()
+                    audioProcessor.stopRecording()
                     
                     if let observation = await createObservation(duration: segmentDuration) {
                         continuation.yield(observation)
@@ -62,6 +62,7 @@ actor ObservationRecorder {
         )
         
         return SoundObservation(
+            id: UUID().uuidString,
             observer_id: getOrCreateDeviceID(),
             date: Date(),
             location: locationStruct,
@@ -69,7 +70,18 @@ actor ObservationRecorder {
             loudness: Double(audioProcessor.currentDecibels),
             duration: duration,
             activity: activityStruct,
-            classifications: audioProcessor.classifications
+            classifications: audioProcessor.classifications,
+            version: Bundle.main.buildVersionNumber ?? "unknown"
         )
     }
 }
+
+extension Bundle {
+    var releaseVersionNumber: String? {
+        return infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+    var buildVersionNumber: String? {
+        return infoDictionary?["CFBundleVersion"] as? String
+    }
+}
+
