@@ -33,7 +33,9 @@ class BackgroundObservationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(
         _ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]
     ) {
-        guard let location = locations.last else { return }
+        guard let _ = locations.last else { return }
+        
+        print("location update received, will start a 60 second recording")
 
         // Cancel any ongoing task
         currentTask?.cancel()
@@ -75,6 +77,8 @@ extension SoundObservation {
         let locationPoint =
             "POINT(\(self.location.longitude) \(self.location.latitude) \(self.location.altitude ?? 0))"
 
+        let classificationsData = try JSONEncoder().encode(self.classifications)
+        
         return SupabaseSoundObservation(
             id: self.id,
             observer_id: self.observer_id,
@@ -87,7 +91,8 @@ extension SoundObservation {
             duration: self.duration,
             activity_type: self.activity.type,
             activity_confidence: self.activity.confidence,
-            classifications: try JSONEncoder().encode(self.classifications),
+            classifications: classificationsData,
+            classifications_text: String(data: classificationsData, encoding: .utf8)!,
             version: self.version
         )
     }
@@ -104,5 +109,6 @@ struct SupabaseSoundObservation: Codable {
     let activity_type: String
     let activity_confidence: String
     let classifications: Data
+    let classifications_text: String
     let version: String
 }
