@@ -88,7 +88,7 @@ final class SystemAudioClassifier: NSObject {
         stopAudioSession()
         do {
             let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.record, mode: .default)
+            try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
             try audioSession.setActive(true)
         } catch {
             stopAudioSession()

@@ -8,6 +8,11 @@
 import CoreLocation
 import Foundation
 import Supabase
+import UserNotifications
+
+enum UserDefaultKey: String {
+    case lastNotificationDateTimeInterval
+}
 
 class BackgroundObservationManager: NSObject, CLLocationManagerDelegate {
     private let locationManager: LocationManagerProtocol
@@ -28,6 +33,7 @@ class BackgroundObservationManager: NSObject, CLLocationManagerDelegate {
     func start() {
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
+        requestNotificationPermission()
     }
 
     func locationManager(
@@ -35,28 +41,70 @@ class BackgroundObservationManager: NSObject, CLLocationManagerDelegate {
     ) {
         guard let _ = locations.last else { return }
         
-        print("location update received, will start a 60 second recording")
+        if let currentActivity = locationManager.currentActivity, currentActivity.walking {
+            let lastNotifTime = UserDefaults().double(forKey: UserDefaultKey.lastNotificationDateTimeInterval.rawValue)
+            if ((Date().timeIntervalSince(Date(timeIntervalSince1970: lastNotifTime))/60.0) > 30) {
+                postImmediateNotification(title: "Activity Changed", body: "Now Walking")
+            }
+        }
+        
+        
+        let recordingTime: TimeInterval = 10
+        
+        print("location update received, will start a \(recordingTime) second recording")
 
-        // Cancel any ongoing task
-        currentTask?.cancel()
+        if currentTask == nil {
+            // Start a new recording task
+            currentTask = Task {
+                await upload(
+                    observations: observationRecorder.startRecording(
+                        totalDuration: recordingTime, segmentDuration: recordingTime))
+            }
+        }
+    }
+    
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Notification permission granted")
+            } else {
+                print("Notification permission denied")
+            }
+        }
+    }
+    
+    private func postImmediateNotification(title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
 
-        // Start a new recording task
-        currentTask = Task {
-            await upload(
-                observations: observationRecorder.startRecording(
-                    totalDuration: 60, segmentDuration: 5))
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error posting notification: \(error)")
+            } else {
+                print("Notification posted successfully")
+            }
         }
     }
 
-    private func upload(observations: AsyncStream<SoundObservation>) async {
+    private func upload(observations: AsyncStream<(SoundObservation, [SoundClassification])>) async {
         // Placeholder for upload functionality
 //        var batch: [SoundObservation] = []
         for await observation in observations {
             print("observation received")
             do {
                 try await client.from("sound_observations")
-                    .insert(observation.supabaseObject())
+                    .insert(observation.0.supabaseObject())
                     .execute()
+                
+                for classification in observation.1 {
+                    try await client.from("sound_classifications")
+                        .insert(classification.supabaseObject())
+                        .execute()
+                }
             } catch {
                 print("error uploading: \(error.localizedDescription)")
             }
@@ -74,8 +122,6 @@ class BackgroundObservationManager: NSObject, CLLocationManagerDelegate {
 extension SoundObservation {
 
     func supabaseObject() throws -> SupabaseSoundObservation {
-        let locationPoint =
-            "POINT(\(self.location.longitude) \(self.location.latitude) \(self.location.altitude ?? 0))"
 
         let classificationsData = try JSONEncoder().encode(self.classifications)
         
@@ -85,7 +131,7 @@ extension SoundObservation {
             observation_date: ISO8601DateFormatter().string(
                 from: self.date
             ),
-            location: locationPoint,
+            location: self.location.postGIS,
             device: self.device.rawValue,
             loudness: self.loudness,
             duration: self.duration,
@@ -96,6 +142,51 @@ extension SoundObservation {
             version: self.version
         )
     }
+}
+
+extension SoundClassification {
+    func supabaseObject() throws -> SupabaseSoundClassification {
+        return SupabaseSoundClassification(
+            id: self.id,
+            observation_id: self.observation_id,
+            observer_id: self.observer_id,
+            observation_date: ISO8601DateFormatter().string(
+                from: self.date
+            ),
+            location: self.location.postGIS,
+            device: self.device.rawValue,
+            loudness: self.loudness,
+            duration: self.duration,
+            activity_type: self.activity.type,
+            activity_confidence: self.activity.confidence,
+            label: self.label,
+            confidence: self.confidence,
+            version: self.version
+        )
+    }
+}
+
+extension Location {
+    var postGIS: String {
+        return "POINT(\(self.longitude) \(self.latitude) \(self.altitude ?? 0))"
+    }
+}
+
+struct SupabaseSoundClassification: Codable {
+    let id: String
+    let observation_id: String
+    
+    let observer_id: String
+    let observation_date: String
+    let location: String
+    let device: String
+    let loudness: Double
+    let duration: Double
+    let activity_type: String
+    let activity_confidence: String
+    let label: String
+    let confidence: Double
+    let version: String
 }
 
 struct SupabaseSoundObservation: Codable {

@@ -62,7 +62,7 @@ struct ObservationRecordingView: View {
             
             for await observation in await recorder.startRecording(totalDuration: totalDuration, segmentDuration: segmentDuration) {
                 await MainActor.run {
-                    observations.append(observation)
+                    observations.append(observation.0)
                 }
             }
             

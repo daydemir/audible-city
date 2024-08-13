@@ -27,6 +27,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("Observations", systemImage: "list.bullet.clipboard")
                 }
+//            IntervalPhotoCapture()
+//                .tabItem {
+//                    Label("Camera", systemImage: "camera")
+//                }
         }
     }
 }

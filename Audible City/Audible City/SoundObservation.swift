@@ -14,6 +14,28 @@ struct Location: Codable {
     let altitude: Double?
 }
 
+
+
+struct SoundClassification: DynamoCodable {
+    let id: String
+    let observer_id: String
+    let date: Date
+    let location: Location
+    let device: Device
+    let version: String
+    
+    let observation_id: String
+    let loudness: Double
+    let duration: TimeInterval
+    let activity: Activity
+    let label: String
+    let confidence: Double
+    
+    func writeable() throws -> [String : DynamoDB.AttributeValue] {
+        return try DynamoDBEncoder().encode(self)
+    }
+}
+
 struct SoundObservation: DynamoCodable {
     let id: String
     let observer_id: String

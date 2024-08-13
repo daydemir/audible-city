@@ -292,10 +292,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Audible City/Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Used to take photos";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "This is required to better classify audio snippets for different types of motion as you move around your city.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Used to save photos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to save photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -327,10 +330,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Audible City/Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Used to take photos";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This is required to classify audio snippets as you move around your city.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "This is required to better classify audio snippets for different types of motion as you move around your city.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Used to save photos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to save photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -58,6 +58,8 @@ class LocationManager: NSObject, LocationManagerProtocol, CLLocationManagerDeleg
     
     func startUpdatingLocation() {
         manager.startUpdatingLocation()
+        manager.startMonitoringSignificantLocationChanges()
+
     }
     
     func stopUpdatingLocation() {
